@@ -1,0 +1,60 @@
+H323plus 1.23.0 - 1.23.1
+Added MediaChannelCapability to OLC
+Added H.235.6 Support
+Updated H323List for depreciation warnings with ptlib 2.11
+Added RTP multiplexing (with H.460.19)
+
+H323plus 1.22 - 1.23
+(Fixed) Deadlock in NAT Method when locking H323Connection
+(Fixed) Encoded audio/video input and output support
+Added H.460.17 support
+(Fixed) PNatMethod changes in ptlib 2.11
+Added of H323Dictionary/H323List for depreciation warnings with ptlib 2.11
+Use fastStart element in CallProceeding again, set enableMERAHack in H323Connection to disable
+(Fixed) H.460.9 support and fine tune where H.460 messages go in PDU
+(Fixed) H.239 support so the correct capability is selected in OLC
+(Fixed) H.224 Stability by fixing initialisation and removing nested mutexes
+Improved H.264 decoder with better initialisation and support for send FPU's
+
+
+H323plus 1.21 - 1.22
+Fixed H.239 Support and now support H.239 only plugins
+G.711 now 20ms sample rate by default
+Added H.264 support (tested with polycom,lifesize,tandberg)
+(fixed) Video frames now on fixed 90k clock timestamp
+Added Video decoder can handle multiple frames to decode
+Added A/V sync support
+Added Audio Packet Loss detection
+Added Video Flow Control signaling
+(fixed) Generic Audio Capability processing
+(fixed) Support for Wideband codecs
+(fixed) H.239 fields not populated in TCS causing error with Tandberg
+Added support for call transfer with routeCallToMC
+Added application access to the received H.245 TCS
+Added support for 16CIF
+Provide timestamp with DTMF tones
+(fixed) Attempt reregistration after being unregistered
+(fixed) Sending and receiving different framesizes
+Added Called/CallingpartySubAddress Q.931
+(Fixed) Tandberg MXP issue with video size
+(Fixed) Tandberg T1000 master/slave issue
+Added Major overhaul of presence system
+Added H.460.24 Annex B
+Added H.460.9 support
+(fixed) compile issue on windows with Platform SDK and "codecs.h"
+Added H.460.23/.24 support
+Added H.460.18/.19 support (Disabled by default)
+(fixed) Slow start being accidently activated when FastStart being acknowledged.
+
+
+H323plus 1.20 - 1.21
+
+Updated to compile with Ptlib 2.2.x and 2.3.x (PBoolean etc.)
+(Fixed) Early Media Fixed as the FastStartState is now checked if acknowledged prior to sending connect message.
+(Fixed) RTP Payload Types not read from the audio plugin codecs (standard and non-standard)
+(Fixed) External RTP Channel: Added new virtual functions to avoid compiling errors when using old OpenH323 code.
+Added callback for the ability to set the Maximum bandwidth for Video Call H323Connection::OnSetInitialBandwidth()
+Corrected FileTransfer Capability OID to avoid conflict with other OID usage
+Added Callback for H.460 Instancing so can disable/remove H.460 Features at runtime.
+Added support for H.450 Non-call supplementary services (like H.450.7)
+(Fixed) Typos with H323_GnuGK directive

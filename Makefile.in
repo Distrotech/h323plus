@@ -1,0 +1,149 @@
+#
+# Makefile
+#
+# Make file for H323plus library
+#
+# Copyright (c) 1998-2000 Equivalence Pty. Ltd.
+#
+# The contents of this file are subject to the Mozilla Public License
+# Version 1.0 (the "License"); you may not use this file except in
+# compliance with the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+#
+# Software distributed under the License is distributed on an "AS IS"
+# basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+# the License for the specific language governing rights and limitations
+# under the License.
+#
+# The Original Code is Open H323 library.
+#
+# The Initial Developer of the Original Code is Equivalence Pty. Ltd.
+#
+# Contributor(s): ______________________________________.
+#
+# $Id: Makefile.in,v 1.6 2011/09/10 04:31:33 shorne Exp $
+#
+
+PREFIX=@INSTALLPREFIX@
+exec_prefix = $(PREFIX)
+LIBDIR=@LIBDIR@
+export OPENH323DIR=@OPENH323DIR@
+
+INSTALL=@INSTALL@
+
+default :: optshared
+
+all :: bothdepend both
+
+include $(OPENH323DIR)/openh323u.mak
+
+
+# export NOAUDIOCODECS=true
+# export NOVIDEO=true
+
+SUBDIRS := samples/simple
+
+ifneq (,$(wildcard dump323))
+SUBDIRS += dump323
+endif
+
+ifneq (,$(wildcard openam))
+SUBDIRS += openam
+endif
+
+ifneq (,$(wildcard pstngw))
+SUBDIRS += pstngw
+endif
+
+ifneq (,$(wildcard openphone))
+ifneq (,$(wildcard $(PTLIBDIR)/src/pwlib))
+SUBDIRS += openphone
+endif
+endif
+
+PREFIX=@INSTALLPREFIX@/
+exec_prefix = ${PREFIX}
+LIBDIR=@LIBDIR@
+
+ifndef PREFIX
+PREFIX=/usr/local
+endif
+
+update:
+	cvs update
+	$(MAKE) all
+
+# standard build command
+$(subst tagbuild,,$(STANDARD_TARGETS)) ::
+	$(MAKE) -C src $@
+
+notrace::
+	$(MAKE) NOTRACE=1
+
+docs: 
+	doxygen h323plus_cfg.dxy
+
+install:
+	mkdir -p $(DESTDIR)$(LIBDIR)
+	rm -f $(DESTDIR)$(LIBDIR)/libh323_*_r.so*
+	$(INSTALL) -m 444 lib/$(OH323_FILE).@MAJOR_VERSION@.@MINOR_VERSION@.@BUILD_NUMBER@ $(DESTDIR)$(LIBDIR)
+	(cd $(DESTDIR)$(LIBDIR) ; \
+		rm -f  $(OH323_FILE).@MAJOR_VERSION@.@MINOR_VERSION@ ; \
+		ln -sf $(OH323_FILE).@MAJOR_VERSION@.@MINOR_VERSION@.@BUILD_NUMBER@ $(OH323_FILE).@MAJOR_VERSION@.@MINOR_VERSION@ \
+	)
+	(cd $(DESTDIR)$(LIBDIR) ; \
+		rm -f  $(OH323_FILE).@MAJOR_VERSION@ ; \
+		ln -sf $(OH323_FILE).@MAJOR_VERSION@.@MINOR_VERSION@.@BUILD_NUMBER@ $(OH323_FILE).@MAJOR_VERSION@ \
+	)
+	(cd $(DESTDIR)$(LIBDIR) ; \
+		rm -f  $(OH323_FILE) ; \
+		ln -sf $(OH323_FILE).@MAJOR_VERSION@.@MINOR_VERSION@.@BUILD_NUMBER@ $(OH323_FILE) \
+	)
+	(cd $(DESTDIR)$(LIBDIR); \
+		rm -f  libopenh323.$(SHAREDLIBEXT) ; \
+		ln -sf $(OH323_FILE) libopenh323.$(SHAREDLIBEXT) \
+	)
+	( for dir in $(DESTDIR)$(LIBDIR) \
+		     $(DESTDIR)$(PREFIX)/include/openh323 \
+		     $(DESTDIR)$(PREFIX)/include/openh323/codec \
+		     $(DESTDIR)$(PREFIX)/include/openh323/h230 \
+		     $(DESTDIR)$(PREFIX)/include/openh323/h235 \
+		     $(DESTDIR)$(PREFIX)/include/openh323/h341 \
+		     $(DESTDIR)$(PREFIX)/include/openh323/h350 \
+		     $(DESTDIR)$(PREFIX)/include/openh323/h450 \
+		     $(DESTDIR)$(PREFIX)/include/openh323/h460 \
+		     $(DESTDIR)$(PREFIX)/share/openh323 ;\
+		do mkdir -p $$dir ; chmod 755 $$dir ; \
+	done)
+	( for fn in include/*.h ; do \
+		$(INSTALL) -m 444 $$fn $(DESTDIR)$(PREFIX)/include/openh323 ; \
+	done)
+	( for fn in include/codec/*.h ; do \
+		$(INSTALL) -m 444 $$fn $(DESTDIR)$(PREFIX)/include/openh323/codec ; \
+	done)
+	( for fn in include/h230/*.h ; do \
+		$(INSTALL) -m 444 $$fn $(DESTDIR)$(PREFIX)/include/openh323/h230 ; \
+	done)
+	( for fn in include/h235/*.h ; do \
+		$(INSTALL) -m 444 $$fn $(DESTDIR)$(PREFIX)/include/openh323/h235 ; \
+	done)
+	( for fn in include/h341/*.h ; do \
+		$(INSTALL) -m 444 $$fn $(DESTDIR)$(PREFIX)/include/openh323/h341 ; \
+	done)
+	( for fn in include/h350/*.h ; do \
+		$(INSTALL) -m 444 $$fn $(DESTDIR)$(PREFIX)/include/openh323/h350 ; \
+	done)
+	( for fn in include/h450/*.h ; do \
+		$(INSTALL) -m 444 $$fn $(DESTDIR)$(PREFIX)/include/openh323/h450 ; \
+	done)
+	( for fn in include/h460/*.h ; do \
+		$(INSTALL) -m 444 $$fn $(DESTDIR)$(PREFIX)/include/openh323/h460 ; \
+	done)
+	$(INSTALL) -m 444 openh323u.mak $(DESTDIR)$(PREFIX)/share/openh323
+
+uninstall:
+	rm -rf $(DESTDIR)$(PREFIX)/include/openh323 \
+	       $(PREFIX)/share/openh323
+	rm -f $(DESTDIR)$(LIBDIR)/$(OH323_FILE) \
+	      $(DESTDIR)$(LIBDIR)/libopenh323.so
+

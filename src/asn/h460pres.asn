@@ -1,0 +1,244 @@
+H460PRES {itu-t(0) recommendation(0) h(8) 460 x} DEFINITIONS AUTOMATIC TAGS ::=
+
+BEGIN
+
+IMPORTS
+		AliasAddress,
+		TransportAddress,
+		TimeToLive,
+		GenericData,
+		GenericIdentifier,
+		GloballyUniqueID
+	FROM MULTIMEDIA-SYSTEM-CONTROL;
+
+--
+-- Presence Base Message
+--
+
+PresenceElement ::= SEQUENCE
+{
+	message		SEQUENCE OF PresenceMessage,
+	...
+}
+
+
+--
+-- Presence Message
+--
+
+PresenceMessage ::= CHOICE
+{
+	presenceStatus		PresenceStatus,
+	presenceInstruct	PresenceInstruct,
+	presenceAuthorize	PresenceAuthorize,
+	presenceNotify		PresenceNotify,
+	presenceRequest		PresenceRequest,
+	presenceResponse	PresenceResponse,
+	presenceAlive		PresenceAlive,
+	presenceRemove		PresenceRemove,
+	presenceAlert		PresenceAlert,
+	...
+}
+
+
+PresenceStatus ::= SEQUENCE  
+{
+	alias			SEQUENCE OF AliasAddress,
+	notification	SEQUENCE OF PresenceNotification,
+	instruction		SEQUENCE OF PresenceInstruction		OPTIONAL,
+	...
+}
+
+PresenceInstruct ::= SEQUENCE
+{
+	alias			AliasAddress,
+	instruction		SEQUENCE OF PresenceInstruction,
+	...
+}
+
+PresenceAuthorize ::= SEQUENCE
+{
+	alias			AliasAddress,
+	subscription		SEQUENCE OF PresenceSubscription,
+	...
+}
+
+PresenceNotify ::= SEQUENCE
+{
+	alias			AliasAddress,
+	notification		SEQUENCE OF PresenceNotification,
+	...
+}
+
+PresenceRequest ::= SEQUENCE
+{
+	subscription		SEQUENCE OF PresenceSubscription,
+	...
+}
+
+PresenceResponse ::= SEQUENCE
+{
+	subscription		SEQUENCE OF PresenceSubscription,
+	...
+}
+
+PresenceAlive ::= SEQUENCE
+{
+	identifier		SEQUENCE OF PresenceIdentifier,
+	...
+}
+PresenceRemove ::= SEQUENCE
+{
+	identifier		SEQUENCE OF PresenceIdentifier,
+	...
+}
+
+PresenceAlert ::= SEQUENCE
+{
+	notification		SEQUENCE OF PresenceNotification,
+	...
+
+}
+
+
+--
+-- Presence PDU
+--
+
+PresencePDU ::= CHOICE
+{
+	instruction		PresenceInstruction,
+	notification		PresenceNotification,
+	subscription		PresenceSubscription,
+	identifier		PresenceIdentifier,
+	...
+}
+
+
+--
+-- Presence Instruction
+--
+
+PresenceInstruction ::= CHOICE
+{
+	subscribe		AliasAddress,
+	unsubscribe		AliasAddress,
+	block			AliasAddress,
+	unblock			AliasAddress,
+	pending			AliasAddress,
+	...
+}
+
+
+--
+-- Presence Subscription
+--
+
+PresenceSubscription ::= SEQUENCE
+{
+	identifier		PresenceIdentifier,
+	subscribe		AliasAddress,    
+	aliases			SEQUENCE OF AliasAddress,
+	approved		BOOLEAN				OPTIONAL,
+	rasAddress		TransportAddress		OPTIONAL,  
+	timeToLive		TimeToLive			OPTIONAL,
+	genericData		SEQUENCE OF GenericData		OPTIONAL,
+	...
+}
+
+
+--
+-- Presence Identifier
+--
+
+PresenceIdentifier ::= SEQUENCE
+{
+	guid			GloballyUniqueID,
+	remove			BOOLEAN				OPTIONAL,
+	...
+}
+
+
+--
+-- Presence Notification
+--
+
+PresenceNotification ::= SEQUENCE
+{
+	aliasAddress	AliasAddress  					OPTIONAL,         
+	subscribers		SEQUENCE OF PresenceIdentifier	OPTIONAL,
+	presentity		Presentity,  
+	...	
+}
+
+
+--
+-- Presentity
+--
+
+PresenceDisplay ::= SEQUENCE
+{
+        language                IA5String 			OPTIONAL,	-- RFC4646 language tag
+        display                 BMPString(SIZE(1..128))
+}
+
+
+PresenceState ::= CHOICE
+{
+	hidden           NULL,
+	available        NULL,  
+	online           NULL,
+	offline          NULL,
+	onCall           NULL,
+	voiceMail        NULL,
+	notAvailable     NULL,
+	away			 NULL,
+	...,
+	generic          SEQUENCE OF PresenceDisplay
+
+}
+
+PresenceFeatureGeneric ::= SEQUENCE
+{
+	identifier	GenericIdentifier,
+	display		IA5String		OPTIONAL,
+	...	
+}
+
+PresenceFeature ::= CHOICE
+{
+	audio		NULL,
+	video		NULL,
+	data		NULL,
+	extVideo	NULL,
+	...,
+	generic		PresenceFeatureGeneric
+
+}
+
+
+PresenceGeoLocation ::= SEQUENCE
+{
+	locale		IA5String	OPTIONAL,
+	region		IA5String	OPTIONAL,
+	country		IA5String	OPTIONAL,
+	countryCode	IA5String	OPTIONAL,
+	latitude	IA5String	OPTIONAL,
+	longitude	IA5String	OPTIONAL,
+	elevation	IA5String	OPTIONAL,
+	...
+}
+
+
+Presentity ::= SEQUENCE
+{
+	state			PresenceState,                     		-- Presence State 
+	supportedFeatures	SEQUENCE OF PresenceFeature	OPTIONAL,	-- Features Supported by Endpoint
+	geolocation		PresenceGeoLocation		OPTIONAL, 	-- Geographic Location
+	display			SEQUENCE OF PresenceDisplay	OPTIONAL, 	-- Basic ISO/IEC 10646-1 (Unicode)
+	genericData		SEQUENCE OF GenericData   	OPTIONAL,	-- Generic Presence Information                
+	...
+}
+
+END
+
