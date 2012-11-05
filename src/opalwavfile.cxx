@@ -33,13 +33,7 @@
 
 #include "opalwavfile.h"
 
-#ifdef _MSC_VER
 #include "../include/codecs.h"
-#else
-#include "codecs.h"
-#endif
-
-
 
 #define new PNEW
 

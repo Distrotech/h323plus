@@ -406,11 +406,7 @@
 #pragma implementation "codecs.h"
 #endif
 
-#ifdef _MSC_VER
 #include "../include/codecs.h"
-#else
-#include "codecs.h"
-#endif
 
 #include "channels.h"
 #include "h323pdu.h"

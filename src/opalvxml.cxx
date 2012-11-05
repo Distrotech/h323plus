@@ -141,11 +141,7 @@
 
 #endif
 
-#ifdef _MSC_VER
 #include "../include/codecs.h"
-#else
-#include "codecs.h"
-#endif
 
 #define	G7231_SAMPLES_PER_BLOCK	240
 #define	G7231_BANDWIDTH		      (6300/100)
