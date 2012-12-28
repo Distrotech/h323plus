@@ -1,0 +1,3 @@
+#!/bin/bash
+
+make -C plugins HAVE_H263P=no DESTDIR=${3} clean all install
